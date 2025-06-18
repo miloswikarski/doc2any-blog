@@ -1,0 +1,26 @@
+# Doc2Any Blog - Minimal Docker Compose (Apache2 Ready)
+# Just the blog application - perfect for Apache2 reverse proxy
+# Use: docker compose -f docker-compose.minimal.yml up -d
+version: '3.8'
+
+services:
+  # Main application only
+  doc2any-blog:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: doc2any-blog
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - NEXT_PUBLIC_GA_ID=UA-47319849-1
+      - NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-2591708616273466
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
