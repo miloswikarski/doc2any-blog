@@ -224,17 +224,17 @@ Access Grafana at `http://localhost:3001` to view:
 git pull origin main
 
 # Rebuild and restart
-docker-compose up -d --build doc2any-blog
+docker compose up -d --build doc2any-blog
 ```
 
 ### System Updates
 
 ```bash
 # Update all images
-docker-compose pull
+docker compose pull
 
 # Restart with new images
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Backup Strategy
