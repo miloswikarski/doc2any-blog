@@ -33,14 +33,14 @@ echo "⏳ Waiting for services to start..."
 sleep 15
 
 # Check if the application is running
-if curl -f http://localhost:3000 > /dev/null 2>&1; then
+if curl -f http://localhost:3001 > /dev/null 2>&1; then
     echo "✅ Doc2Any Blog is running successfully!"
-    echo "🌐 Application available at: http://localhost:3000"
+    echo "🌐 Application available at: http://localhost:3001"
     echo "📋 Configure your Apache2 virtual host to proxy to this port"
     echo ""
     echo "📝 Apache2 Configuration Example:"
-    echo "   ProxyPass / http://localhost:3000/"
-    echo "   ProxyPassReverse / http://localhost:3000/"
+    echo "   ProxyPass / http://localhost:3001/"
+    echo "   ProxyPassReverse / http://localhost:3001/"
     echo "   ProxyPreserveHost On"
     echo ""
 else

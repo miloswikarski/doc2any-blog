@@ -17,6 +17,7 @@ docker compose -f docker-compose.minimal.yml up -d
 ### 2. Configure Apache2
 
 #### Enable Required Modules
+
 ```bash
 sudo a2enmod proxy
 sudo a2enmod proxy_http
@@ -29,6 +30,7 @@ sudo a2enmod deflate
 ```
 
 #### Copy Virtual Host Configuration
+
 ```bash
 # Copy the provided configuration
 sudo cp apache2/doc2any.conf /etc/apache2/sites-available/
@@ -49,12 +51,14 @@ sudo systemctl reload apache2
 ## 📋 Configuration Details
 
 ### Docker Container
-- **Port**: 3000
+
+- **Port**: 3001 (mapped from internal 3000)
 - **Health Check**: Built-in HTTP health check
 - **Restart Policy**: unless-stopped
 - **Environment**: Production optimized
 
 ### Apache2 Virtual Host Features
+
 - **SSL/HTTPS**: Automatic HTTP to HTTPS redirect
 - **Security Headers**: HSTS, X-Frame-Options, CSP
 - **Compression**: Gzip for text content
@@ -64,14 +68,18 @@ sudo systemctl reload apache2
 ## 🔧 Customization
 
 ### Domain Configuration
+
 Update these lines in `/etc/apache2/sites-available/doc2any.conf`:
+
 ```apache
 ServerName your-domain.com
 ServerAlias www.your-domain.com
 ```
 
 ### SSL Certificate Paths
+
 Update these paths to match your SSL certificates:
+
 ```apache
 SSLCertificateFile /path/to/your/certificate.crt
 SSLCertificateKeyFile /path/to/your/private.key
@@ -79,13 +87,16 @@ SSLCertificateChainFile /path/to/your/chain.crt
 ```
 
 ### Port Configuration
+
 If you need to change the Docker port, update both:
-1. `docker-compose.minimal.yml`: Change `"3000:3000"` to `"YOUR_PORT:3000"`
-2. Apache2 config: Change `http://localhost:3000/` to `http://localhost:YOUR_PORT/`
+
+1. `docker-compose.minimal.yml`: Change `"3001:3000"` to `"YOUR_PORT:3000"`
+2. Apache2 config: Change `http://localhost:3001/` to `http://localhost:YOUR_PORT/`
 
 ## 🔍 Monitoring and Maintenance
 
 ### Check Container Status
+
 ```bash
 # View running containers
 docker compose -f docker-compose.minimal.yml ps
@@ -98,6 +109,7 @@ docker compose -f docker-compose.minimal.yml restart
 ```
 
 ### Apache2 Logs
+
 ```bash
 # View error logs
 sudo tail -f /var/log/apache2/doc2any_error.log
@@ -110,9 +122,10 @@ sudo systemctl status apache2
 ```
 
 ### Health Checks
+
 ```bash
 # Test application directly
-curl -I http://localhost:3000
+curl -I http://localhost:3001
 
 # Test through Apache2
 curl -I https://your-domain.com
@@ -124,6 +137,7 @@ openssl s_client -connect your-domain.com:443 -servername your-domain.com
 ## 🔄 Updates and Deployment
 
 ### Update Application
+
 ```bash
 # Pull latest code
 git pull origin main
@@ -133,6 +147,7 @@ docker compose -f docker-compose.minimal.yml up -d --build
 ```
 
 ### Backup and Restore
+
 ```bash
 # Backup (if using volumes)
 docker compose -f docker-compose.minimal.yml down
@@ -146,22 +161,25 @@ docker compose -f docker-compose.minimal.yml up -d
 ## 🛡️ Security Considerations
 
 ### Firewall Configuration
+
 ```bash
 # Allow only necessary ports
 sudo ufw allow 22    # SSH
 sudo ufw allow 80    # HTTP
 sudo ufw allow 443   # HTTPS
-sudo ufw deny 3000   # Block direct access to Docker container
+sudo ufw deny 3001   # Block direct access to Docker container
 sudo ufw enable
 ```
 
 ### SSL/TLS Best Practices
+
 - Use strong SSL ciphers
 - Enable HSTS with long max-age
 - Consider using Let's Encrypt for free SSL certificates
 - Regularly update SSL certificates
 
 ### Container Security
+
 - Container runs as non-root user (nextjs:nodejs)
 - Minimal attack surface with Alpine Linux base
 - No unnecessary ports exposed
@@ -172,30 +190,33 @@ sudo ufw enable
 ### Common Issues
 
 #### Container Won't Start
+
 ```bash
 # Check logs
 docker compose -f docker-compose.minimal.yml logs
 
 # Check port conflicts
-sudo netstat -tulpn | grep :3000
+sudo netstat -tulpn | grep :3001
 
 # Restart Docker service
 sudo systemctl restart docker
 ```
 
 #### Apache2 Proxy Issues
+
 ```bash
 # Check Apache2 error logs
 sudo tail -f /var/log/apache2/error.log
 
 # Test proxy configuration
-curl -H "Host: your-domain.com" http://localhost:3000
+curl -H "Host: your-domain.com" http://localhost:3001
 
 # Verify modules are enabled
 apache2ctl -M | grep proxy
 ```
 
 #### SSL Certificate Issues
+
 ```bash
 # Test SSL configuration
 sudo apache2ctl configtest
@@ -210,11 +231,13 @@ openssl verify -CAfile /path/to/chain.crt /path/to/certificate.crt
 ## 📞 Support
 
 For Apache2-specific issues:
+
 - Check Apache2 error logs: `sudo tail -f /var/log/apache2/error.log`
 - Test configuration: `sudo apache2ctl configtest`
 - Verify proxy modules: `apache2ctl -M | grep proxy`
 
 For Docker issues:
+
 - Check container logs: `docker compose -f docker-compose.minimal.yml logs`
 - Verify container health: `docker compose -f docker-compose.minimal.yml ps`
-- Test direct access: `curl http://localhost:3000`
+- Test direct access: `curl http://localhost:3001`
