@@ -265,7 +265,7 @@ kill -9 <PID>
 
 ```bash
 # Check Traefik logs
-docker-compose logs traefik
+docker compose logs traefik
 
 # Verify domain DNS
 nslookup your-domain.com
