@@ -1,0 +1,37 @@
+# Development docker-compose for local development
+version: '3.8'
+
+services:
+  # Development application with hot reload
+  doc2any-blog-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: doc2any-blog-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_GA_ID=UA-47319849-1
+      - NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-2591708616273466
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    restart: unless-stopped
+    networks:
+      - doc2any-dev-network
+
+  # Redis for development caching
+  redis-dev:
+    image: redis:7-alpine
+    container_name: doc2any-redis-dev
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    networks:
+      - doc2any-dev-network
+
+networks:
+  doc2any-dev-network:
+    driver: bridge
