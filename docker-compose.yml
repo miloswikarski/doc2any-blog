@@ -1,3 +1,5 @@
+# Doc2Any Blog - Production Docker Compose
+# Use: docker compose up -d (not docker-compose)
 version: '3.8'
 
 services:

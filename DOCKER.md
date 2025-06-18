@@ -278,10 +278,10 @@ curl -I http://your-domain.com/.well-known/acme-challenge/test
 
 ```bash
 # Check application logs
-docker-compose logs doc2any-blog
+docker compose logs doc2any-blog
 
 # Verify build
-docker-compose build --no-cache doc2any-blog
+docker compose build --no-cache doc2any-blog
 
 # Check disk space
 df -h
@@ -304,8 +304,8 @@ curl http://localhost:3000/api/metrics
 
 For Docker-specific issues:
 
-- Check logs: `docker-compose logs`
-- Verify configuration: `docker-compose config`
-- Test connectivity: `docker-compose exec doc2any-blog ping redis`
+- Check logs: `docker compose logs`
+- Verify configuration: `docker compose config`
+- Test connectivity: `docker compose exec doc2any-blog ping redis`
 
 For application issues, refer to the main README.md file.
