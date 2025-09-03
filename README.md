@@ -81,7 +81,7 @@ pnpm dev
 1. Create a new directory in `src/app/blog/[post-slug]/`
 2. Add a `page.tsx` file with the blog post content
 3. Update the blog listing in `src/app/blog/page.tsx`
-4. Add the new post to `src/app/sitemap.ts`
+4. The sitemap will automatically include your new post (no manual update needed!)
 
 ### SEO Optimization
 
@@ -92,6 +92,27 @@ Each page includes:
 - Structured data (JSON-LD)
 - Semantic HTML structure
 - Optimized images and performance
+
+#### Robots.txt & Sitemap
+
+The site includes automated SEO file generation:
+
+- **Dynamic Sitemap** (`/sitemap.xml`): Automatically discovers blog posts and includes all pages
+- **Smart Robots.txt** (`/robots.txt`): Optimized rules for different search engines
+- **SEO Validation**: Run `npm run validate-seo` to check your setup
+
+The sitemap automatically includes:
+
+- All static pages (home, blog, tools, about, contact)
+- All blog posts (discovered dynamically from the file system)
+- Proper lastModified dates based on file modification times
+- SEO-friendly priorities and change frequencies
+
+The robots.txt includes:
+
+- Optimized crawling rules for major search engines
+- Proper disallow patterns for private/system files
+- Sitemap reference for search engine discovery
 
 ## 🎯 Google Ads Integration
 

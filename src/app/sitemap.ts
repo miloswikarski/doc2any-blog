@@ -1,9 +1,38 @@
 import { MetadataRoute } from 'next'
+import fs from 'fs'
+import path from 'path'
+
+// Get all blog post directories dynamically
+function getBlogPosts() {
+  const blogDir = path.join(process.cwd(), 'src/app/blog')
+
+  try {
+    const entries = fs.readdirSync(blogDir, { withFileTypes: true })
+    return entries
+      .filter(entry => entry.isDirectory())
+      .map(entry => entry.name)
+      .filter(name => name !== 'page.tsx') // Exclude any non-blog directories
+  } catch (error) {
+    console.error('Error reading blog directory:', error)
+    return []
+  }
+}
+
+// Get file modification time for more accurate lastModified dates
+function getFileModifiedDate(filePath: string): Date {
+  try {
+    const stats = fs.statSync(filePath)
+    return stats.mtime
+  } catch (error) {
+    return new Date()
+  }
+}
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://doc2any.grapph.com'
-  
-  return [
+
+  // Static pages
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -34,42 +63,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.6,
     },
-    // Blog posts
-    {
-      url: `${baseUrl}/blog/pdf-conversion-guide`,
-      lastModified: new Date('2024-01-15'),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blog/office-vs-openoffice`,
-      lastModified: new Date('2024-01-12'),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blog/batch-conversion`,
-      lastModified: new Date('2024-01-10'),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blog/winmail-dat-explained`,
-      lastModified: new Date('2024-01-08'),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blog/html-conversion-seo`,
-      lastModified: new Date('2024-01-05'),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blog/spreadsheet-formats`,
-      lastModified: new Date('2024-01-03'),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
   ]
+
+  // Dynamic blog posts
+  const blogPosts = getBlogPosts()
+  const blogPages: MetadataRoute.Sitemap = blogPosts.map(slug => {
+    const blogPostPath = path.join(process.cwd(), 'src/app/blog', slug, 'page.tsx')
+    const lastModified = getFileModifiedDate(blogPostPath)
+
+    return {
+      url: `${baseUrl}/blog/${slug}`,
+      lastModified,
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    }
+  })
+
+  return [...staticPages, ...blogPages]
 }
