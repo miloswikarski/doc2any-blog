@@ -23,7 +23,7 @@ function getFileModifiedDate(filePath: string): Date {
   try {
     const stats = fs.statSync(filePath)
     return stats.mtime
-  } catch (error) {
+  } catch {
     return new Date()
   }
 }
